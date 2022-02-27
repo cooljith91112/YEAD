@@ -2,7 +2,8 @@ menu = {} -- Menu Game State
 
 local Timer = require "libs.hump.timer"
 local Gamestate = require("libs.hump.gamestate")
-
+Moonshine = require("libs.moonshine")
+require("utils.constants")
 -- scenes
 require("scenes.level1_scene");
 
@@ -13,10 +14,18 @@ local windowWidth = love.graphics.getWidth()
 local windowHeight = love.graphics.getHeight()
 
 function menu:init()
-    print("Entering Menu")
     titleFont = love.graphics.newFont('assets/fonts/minecraftia.ttf', titleFontSize)
     startMsgFont = love.graphics.newFont('assets/fonts/minecraftia.ttf', msgFontSize)
     music = love.audio.newSource("assets/music/Stevia Sphere - Drum machine dreams.ogg", "stream")
+    effect = Moonshine(windowWidth, windowHeight, Moonshine.effects.crt)
+    .chain(Moonshine.effects.vignette)
+    .chain(Moonshine.effects.scanlines)
+    .chain(Moonshine.effects.chromasep)
+    effect.scanlines.thickness = .2
+    effect.scanlines.opacity = .5
+    effect.chromasep.angle = 1
+    effect.chromasep.radius = 2
+
     music:setLooping(true)
     msgFontColor = {0, 0, 0}
     titleFontColor = {1, 1, 1}
@@ -32,6 +41,7 @@ function menu:init()
 
     fadeIn()
     music:play()
+    constants.resetColors()
 end
 
 function menu:enter(previous)
@@ -48,15 +58,16 @@ function menu:update(dt)
 end
 
 function menu:draw()
-    love.graphics.setFont(titleFont)
-    love.graphics.setColor(titleFontColor)
-    love.graphics.draw(starfield, love.graphics.getWidth() * 0.5, love.graphics.getHeight() * 0.5)
-    love.graphics.print("Enemy is in Another Dungeon",(windowWidth * 0.5) - (titleFontSize * defaultFontFactor), (windowHeight * 0.5) - 50)
+    effect(function()
+        love.graphics.setFont(titleFont)
+        love.graphics.setColor(titleFontColor)
+        love.graphics.draw(starfield, love.graphics.getWidth() * 0.5, love.graphics.getHeight() * 0.5)
+        love.graphics.print("Enemy is in Another Dungeon",(windowWidth * 0.5) - (titleFontSize * defaultFontFactor), (windowHeight * 0.5) - 50)
 
-    love.graphics.setFont(startMsgFont)
-    love.graphics.setColor(msgFontColor)
-    love.graphics.print("Press X to START", (windowWidth * 0.5) - (msgFontSize * (defaultFontFactor/1.5)), windowHeight - 50)
-    
+        love.graphics.setFont(startMsgFont)
+        love.graphics.setColor(msgFontColor)
+        love.graphics.print("Press X to START", (windowWidth * 0.5) - (msgFontSize * (defaultFontFactor/1.5)), windowHeight - 50)
+    end)
 end
 
 function menu:keyreleased(key, scancode)
@@ -67,12 +78,18 @@ end
 
 function generateStarfield()
     image = love.graphics.newImage("assets/images/particle.png")
-    psystem = love.graphics.newParticleSystem(image, 500)
-	psystem:setParticleLifetime(2, 15) -- Particles live at least 2s and at most 5s.
-	psystem:setEmissionRate(500)
-	psystem:setSizeVariation(1)
-	psystem:setLinearAcceleration(-20, -20, 20, 20) -- Random movement in all directions.
-	psystem:setColors(1, 1, 1, 1, 1, 1, 1, 0) -- Fade to transparency.
+    psystem = love.graphics.newParticleSystem(image, 2500)
+    psystem:setEmissionRate(466.67)
+    psystem:setParticleLifetime(2*.5, 2)
+    psystem:setSizeVariation(0.63)
+    psystem:setRadialAcceleration(946.67*0.5, 946.67*0.5)
+    psystem:setColors(love.math.random(), 1, love.math.random(), 1, love.math.random(), 1, 1, 0)
+    psystem:setEmissionArea('normal', 39, 39)
+    psystem:setDirection(-4.79)
+    psystem:setSizes(3.13, 3, 0.1)
+    psystem:setSizeVariation(0.63)
+    psystem:setTangentialAcceleration(500*0.5, 500)
+
     return psystem
 end
 
