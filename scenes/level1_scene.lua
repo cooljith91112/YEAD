@@ -20,12 +20,12 @@ function level1:update(dt)
 end
 
 function level1:draw()
-    map.draw()
+  map.draw()
     --love.graphics.print("Level 1", 100, 200)
 end
 
 function level1:keypressed(key, scancode)
-    
+    map.keypressed(key, scancode)
 end
 
 function level1:leave()
