@@ -4,23 +4,28 @@ STI = require("libs.sti")
 Moonshine = require("libs.moonshine")
 Camera = require("libs.hump.camera")
 Windfield = require("libs.windfield")
+require("libs.tserial")
+print(TSerial)
+require("core.notifications")
 
-zoomFactor = 2
-player = {
+local zoomFactor = 2
+local player = {
   x=0,
   y=0,
   sprite=love.graphics.newImage("assets/images/player_demo.png"),
   speed=100
 }
 
-windowWidth, windowHeight = love.graphics.getDimensions()
-_w = windowWidth/zoomFactor
-_h = windowHeight/zoomFactor
+local windowWidth, windowHeight = love.graphics.getDimensions()
+local _w = windowWidth/zoomFactor
+local _h = windowHeight/zoomFactor
 
 Map = Class {
   __include=Gamestate,
   init = function(self, mapName)
     _gameWorld = Windfield.newWorld(0,0)
+    _gameWorld:addCollisionClass('player')
+    _gameWorld:addCollisionClass('interactive')
     effect = Moonshine(windowWidth, windowHeight, Moonshine.effects.crt)
                     .chain(Moonshine.effects.vignette)
                     .chain(Moonshine.effects.scanlines)
@@ -30,15 +35,32 @@ Map = Class {
     effect.chromasep.angle = 1
     effect.chromasep.radius = 2
 
+    notifications = Notifications(zoomFactor)
     camera = Camera()
     camera:zoom(zoomFactor)
     currentMap = STI("assets/maps/"..mapName..".lua")
     if currentMap.layers["entities"] then
         for i,obj in pairs(currentMap.layers["entities"].objects) do
-          player.x = obj.x
-          player.y = obj.y
-          player.collider = _gameWorld:newBSGRectangleCollider(player.x, player.y, 8, 8, 0)
-          player.collider:setFixedRotation(true)
+          if obj.name=="player" and obj.type=="player" then
+            player.x = obj.x
+            player.y = obj.y
+            player.collider = _gameWorld:newBSGRectangleCollider(player.x, player.y, 8, 8, 0)
+            
+            player.collider:setFixedRotation(true)
+            player.collider:setCollisionClass('player')
+          end
+
+          if obj.type=="interactive" then
+            local collider = _gameWorld:newRectangleCollider(obj.x, obj.y, obj.width, obj.height)
+            local interactiveData = {
+              type = obj.type,
+              interactive_type = obj.properties.interactive_type,
+              data = obj.properties.data
+            }
+            collider:setObject(interactiveData)
+            collider:setCollisionClass('interactive')
+            collider:setType("static")
+          end
         end
     end
 
@@ -100,6 +122,21 @@ function Map:update(dt)
   if camera.y > (mapHeight - _h/2) then
     camera.y = (mapHeight - _h/2)
   end
+
+  if player.collider:enter('interactive') then
+    local _interColliderData = player.collider:getEnterCollisionData('interactive')
+    local interactiveCollider = _interColliderData.collider
+    local interactiveData = interactiveCollider:getObject()
+
+    if interactiveData.interactive_type=="pickable" then 
+      notifications:send(interactiveData.data)
+    end
+
+    if interactiveData.interactive_type=="message_notification" then 
+      notifications:send(interactiveData.data)
+    end
+  end
+  notifications:update(dt)
 end
 
 function Map:draw()
@@ -109,8 +146,9 @@ function Map:draw()
       drawMapLayer("decorations")
       love.graphics.draw(player.sprite, player.x, player.y)
       drawMapLayer("foreground")
-      -- _gameWorld:draw()
+      _gameWorld:draw()
     camera:detach()
+    notifications:draw()
   end)
 end
 

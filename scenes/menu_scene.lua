@@ -3,7 +3,7 @@ menu = {} -- Menu Game State
 local Timer = require "libs.hump.timer"
 local Gamestate = require("libs.hump.gamestate")
 Moonshine = require("libs.moonshine")
-require("utils.constants")
+require("core.constants")
 -- scenes
 require("scenes.level1_scene");
 

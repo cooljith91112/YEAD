@@ -1,10 +1,10 @@
 Class = require("libs.hump.class")
 Shack = require("libs.shack")
-local Timer = require("libs.hump.Timer")
+local Timer = require("libs.hump.timer")
 
 ScreenShaker = Class {
     init = function(self)
-        monsterGrowl = love.audio.newSource("assets/sfx/sfx_deathscream_alien1.wav", "static")
+        monsterGrowl = love.audio.newSource("assets/sfx/monster_growl.wav", "static")
         local width, height = love.graphics.getDimensions()
         Shack:setDimensions(width, height)
         Timer.every(10, shakeScreen)

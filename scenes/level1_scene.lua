@@ -1,12 +1,14 @@
 level1 = {} -- Level1 State
-require("utils.screen_shaker")
-Map = require("utils.map")
+require("core.screen_shaker")
+Map = require("core.map")
 -- imports
-require("utils.constants")
+require("core.constants")
+require("core.ambience")
 
 function level1:init()
   constants.resetColors()
   screenShake = ScreenShaker()
+  ambience = Ambience({"atmosphere1","thunder"})
   map = Map("level1")
 end
 
