@@ -6,13 +6,14 @@ Camera = require("libs.hump.camera")
 Windfield = require("libs.windfield")
 require("libs.tserial")
 require("core.notifications")
-
+require("entities.enemy")
 local zoomFactor = 3
 local player = {
   x=0,
   y=0,
   sprite=love.graphics.newImage("assets/images/player_demo.png"),
-  speed=100
+  speed=100,
+  dir="down"
 }
 local fullscreen = true
 
@@ -24,8 +25,10 @@ Map = Class {
   __include=Gamestate,
   init = function(self, mapName)
     _gameWorld = Windfield.newWorld(0,0)
+    _gameWorld:setQueryDebugDrawing(true) -- Remove when deploy
     _gameWorld:addCollisionClass('player')
     _gameWorld:addCollisionClass('interactive')
+    _gameWorld:addCollisionClass('enemy')
     effect = Moonshine(windowWidth, windowHeight, Moonshine.effects.crt)
                     .chain(Moonshine.effects.vignette)
                     .chain(Moonshine.effects.scanlines)
@@ -49,6 +52,11 @@ Map = Class {
             
             player.collider:setFixedRotation(true)
             player.collider:setCollisionClass('player')
+            player.collider:setObject({
+              x = player.x,
+              y = player.y,
+              dir = player.dir
+            })
           end
 
           if obj.type=="interactive" then
@@ -56,11 +64,17 @@ Map = Class {
             local interactiveData = {
               type = obj.type,
               interactive_type = obj.properties.interactive_type,
-              data = obj.properties.data
+              message = obj.properties.message and obj.properties.message or nil,
+              talker_data = obj.properties.talker_data and obj.properties.talker_data or nil
             }
             collider:setObject(interactiveData)
             collider:setCollisionClass('interactive')
             collider:setType("static")
+          end
+
+          if obj.type=="enemy" then
+            enemy = Enemy(obj.x, obj.y, _gameWorld)
+            enemy:setCollider()
           end
         end
     end
@@ -81,18 +95,22 @@ function Map:update(dt)
 
   if love.keyboard.isDown("w") then
     vy = player.speed * -1
+    player.dir = "up"
   end
   
   if love.keyboard.isDown("a") then
     vx = player.speed * -1
+    player.dir = "left"
   end
   
   if love.keyboard.isDown("s") then
     vy = player.speed
+    player.dir = "down"
   end
 
   if love.keyboard.isDown("d") then
     vx = player.speed
+    player.dir = "right"
   end
 
   player.collider:setLinearVelocity(vx, vy)
@@ -100,6 +118,11 @@ function Map:update(dt)
   _gameWorld:update(dt)
   player.x = player.collider:getX() - 4
   player.y = player.collider:getY() - 4
+  player.collider:setObject({
+    x = player.x,
+    y = player.y,
+    dir = player.dir
+  })
 
   camera:lookAt(player.x, player.y)
   currentMap:update(dt)
@@ -127,16 +150,12 @@ function Map:update(dt)
     local _interColliderData = player.collider:getEnterCollisionData('interactive')
     local interactiveCollider = _interColliderData.collider
     local interactiveData = interactiveCollider:getObject()
-
-    if interactiveData.interactive_type=="pickable" then 
-      notifications:send(interactiveData.data)
-    end
-
-    if interactiveData.interactive_type=="message_notification" then 
-      notifications:send(interactiveData.data)
+    if interactiveData.message then 
+      notifications:send(interactiveData.message)
     end
   end
   notifications:update(dt)
+  enemy:update(dt)
 end
 
 function Map:draw()
@@ -146,7 +165,8 @@ function Map:draw()
       drawMapLayer("decorations")
       love.graphics.draw(player.sprite, player.x, player.y)
       drawMapLayer("foreground")
-      -- _gameWorld:draw() -- Debug Collision Draw
+      _gameWorld:draw() -- Debug Collision Draw
+      enemy:draw()
     camera:detach()
     notifications:draw()
   end)
@@ -157,7 +177,6 @@ function Map:keypressed(key, scancode)
   if(scancode=="f4") then
     fullscreen = not fullscreen
     love.window.setFullscreen(fullscreen)
-    print("Fullscreen Toggle")
     resize()
   end
 end

@@ -33,9 +33,4 @@ function level1:leave()
   map = nil
 end
 
-
-function printMessage()
-  -- print('Hello')
-end
-
 return level1

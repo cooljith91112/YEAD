@@ -9,7 +9,7 @@ return {
   tilewidth = 16,
   tileheight = 16,
   nextlayerid = 7,
-  nextobjectid = 32,
+  nextobjectid = 33,
   properties = {},
   tilesets = {
     {
@@ -300,8 +300,8 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["data"] = "Beware of the Alien Monster",
-            ["interactive_type"] = "message_notification"
+            ["interactive_type"] = "message_notification",
+            ["talker_data"] = "Beware of the Alien Monster"
           }
         },
         {
@@ -316,8 +316,8 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["data"] = "Acquired Potion",
-            ["interactive_type"] = "pickable"
+            ["interactive_type"] = "pickable",
+            ["message"] = "Acquired Potion"
           }
         },
         {
@@ -332,8 +332,8 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["data"] = "Acquired Potion",
-            ["interactive_type"] = "pickable"
+            ["interactive_type"] = "pickable",
+            ["message"] = "Acquired Potion"
           }
         },
         {
@@ -348,9 +348,22 @@ return {
           rotation = 0,
           visible = true,
           properties = {
-            ["data"] = "Acquired Potion",
-            ["interactive_type"] = "pickable"
+            ["interactive_type"] = "pickable",
+            ["message"] = "Acquired Potion"
           }
+        },
+        {
+          id = 32,
+          name = "",
+          type = "enemy",
+          shape = "rectangle",
+          x = 128,
+          y = 48,
+          width = 16,
+          height = 16,
+          rotation = 0,
+          visible = true,
+          properties = {}
         }
       }
     },
