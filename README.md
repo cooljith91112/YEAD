@@ -1,5 +1,7 @@
 ## Your Enemy is in Another Dungeon
 
+<img src="img/screenshot.png" alt="lul-bot-logo" width="100%"/>
+
 Source code of my ```LÖVE Jam 2022``` entry.
 
 This game is written in lua and LÖVE 2D framework. You may need LÖVE 2D installed to run.
