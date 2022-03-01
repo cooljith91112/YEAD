@@ -3,10 +3,14 @@ Timer = require("libs.hump.timer")
 require("core.constants")
 Notifications = Class {
     init = function(self, zoomFactor)
-        windowWidth, windowHeight = love.graphics.getDimensions()
+        self.calculateWindowDimensions()
     end,
     messages={}
 }
+
+function Notifications:calculateWindowDimensions()
+    windowWidth, windowHeight = love.graphics.getDimensions()
+end
 
 function Notifications:update(dt)
     for i,obj in pairs(self.messages) do

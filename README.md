@@ -4,6 +4,13 @@ Source code of my ```LÖVE Jam 2022``` entry.
 
 This game is written in lua and LÖVE 2D framework. You may need LÖVE 2D installed to run.
 
+### Controls
+```
+WASD - Move
+F4 - Toggle Fullscreen
+ESCAPE - Exit
+```
+
 ### Libraries Used
 - [anim8](https://github.com/kikito/anim8)
 - [hump](https://github.com/vrld/hump)

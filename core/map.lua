@@ -1,19 +1,20 @@
 Class = require("libs.hump.class")
 Gamestate = require("libs.hump.gamestate")
 STI = require("libs.sti")
-Moonshine = require("libs.moonshine")
+local Moonshine = require("libs.moonshine")
 Camera = require("libs.hump.camera")
 Windfield = require("libs.windfield")
 require("libs.tserial")
 require("core.notifications")
 
-local zoomFactor = 2
+local zoomFactor = 3
 local player = {
   x=0,
   y=0,
   sprite=love.graphics.newImage("assets/images/player_demo.png"),
   speed=100
 }
+local fullscreen = true
 
 local windowWidth, windowHeight = love.graphics.getDimensions()
 local _w = windowWidth/zoomFactor
@@ -29,10 +30,11 @@ Map = Class {
                     .chain(Moonshine.effects.vignette)
                     .chain(Moonshine.effects.scanlines)
                     .chain(Moonshine.effects.chromasep)
+
     effect.scanlines.thickness = .2
     effect.scanlines.opacity = .5
     effect.chromasep.angle = 1
-    effect.chromasep.radius = 2
+    effect.chromasep.radius = 3
 
     notifications = Notifications(zoomFactor)
     camera = Camera()
@@ -74,23 +76,22 @@ Map = Class {
 }
 
 function Map:update(dt)
-
   local vx = 0
   local vy = 0
 
-  if love.keyboard.isDown("up") then
+  if love.keyboard.isDown("w") then
     vy = player.speed * -1
   end
-
-  if love.keyboard.isDown("down") then
+  
+  if love.keyboard.isDown("a") then
+    vx = player.speed * -1
+  end
+  
+  if love.keyboard.isDown("s") then
     vy = player.speed
   end
 
-  if love.keyboard.isDown("left") then
-    vx = player.speed * -1
-  end
-
-  if love.keyboard.isDown("right") then
+  if love.keyboard.isDown("d") then
     vx = player.speed
   end
 
@@ -149,15 +150,32 @@ function Map:draw()
     camera:detach()
     notifications:draw()
   end)
+
 end
 
 function Map:keypressed(key, scancode)
+  if(scancode=="f4") then
+    fullscreen = not fullscreen
+    love.window.setFullscreen(fullscreen)
+    print("Fullscreen Toggle")
+    resize()
+  end
 end
 
 function drawMapLayer(layerName)
   if currentMap.layers[layerName].visible then
     currentMap:drawLayer(currentMap.layers[layerName])
   end
+end
+
+function resize()
+	_width, _height = love.graphics.getDimensions()
+  if not(fullscreen) then
+		_width = 1280
+		_height = 720
+	end
+	effect.resize(_width,_height)
+  notifications.calculateWindowDimensions()
 end
 
 return Map
