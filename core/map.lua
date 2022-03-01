@@ -5,7 +5,6 @@ Moonshine = require("libs.moonshine")
 Camera = require("libs.hump.camera")
 Windfield = require("libs.windfield")
 require("libs.tserial")
-print(TSerial)
 require("core.notifications")
 
 local zoomFactor = 2
@@ -146,7 +145,7 @@ function Map:draw()
       drawMapLayer("decorations")
       love.graphics.draw(player.sprite, player.x, player.y)
       drawMapLayer("foreground")
-      _gameWorld:draw()
+      -- _gameWorld:draw() -- Debug Collision Draw
     camera:detach()
     notifications:draw()
   end)

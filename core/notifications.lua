@@ -1,31 +1,48 @@
 Class = require("libs.hump.class")
 Timer = require("libs.hump.timer")
+require("core.constants")
 Notifications = Class {
     init = function(self, zoomFactor)
-        color = {1, 0, 0, 1}
-        local windowWidth, windowHeight = love.graphics.getDimensions()
+        windowWidth, windowHeight = love.graphics.getDimensions()
     end,
-    _message={}
+    messages={}
 }
 
 function Notifications:update(dt)
-    Timer.update(dt)
+    for i,obj in pairs(self.messages) do
+        if obj.timer then
+            obj.timer:update(dt)
+        end
+    end
 end
 
 function Notifications:draw()
-    if self._message then
-        love.graphics.setColor(color)
-        love.graphics.print(self._message, 10, wind)
+    love.graphics.setFont(constants.defaultFont)
+    local defaultY =  windowHeight - 20
+    for i,obj in pairs(self.messages) do
+        love.graphics.setColor(obj.color)
+        love.graphics.print(obj.message, 10, defaultY)
+        defaultY = defaultY - 15
     end
 end
 
 function Notifications:send(message)
-    self._message = message
-    color = {1, 0, 0, 1}
-    if Timer then
-        Timer.clear()
-    end
-    Timer.tween(5, color, {0, 0, 0, 0}, 'linear')
+    local messageItem={
+        message=message,
+        color={1, 0, 0, 1},
+        timer=nil
+    }
+    table.insert(self.messages, messageItem)
+    for i,obj in pairs(self.messages) do
+        if obj.timer==nil then
+            obj.timer = Timer.new()
+            obj.timer:tween(5, obj.color, {0, 0, 0, 0}, 'linear', function()
+                obj.timer:clear()
+                obj.timer = nil
+                table.remove(self.messages, 1)
+            end)
+        end
+    end   
 end
 
 return Notifications

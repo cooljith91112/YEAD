@@ -35,7 +35,7 @@ end
 
 
 function printMessage()
-  print('Hello')
+  -- print('Hello')
 end
 
 return level1

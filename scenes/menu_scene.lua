@@ -7,16 +7,21 @@ require("core.constants")
 -- scenes
 require("scenes.level1_scene");
 
-local titleFontSize = 25
+local titleFontSize1 = 35
+local titleFontSize2 = 40
 local msgFontSize = 15
-local defaultFontFactor = 8
+local defaultFontFactor = 10.30
 local windowWidth = love.graphics.getWidth()
 local windowHeight = love.graphics.getHeight()
 
 function menu:init()
-    titleFont = love.graphics.newFont('assets/fonts/minecraftia.ttf', titleFontSize)
-    startMsgFont = love.graphics.newFont('assets/fonts/minecraftia.ttf', msgFontSize)
+    titleFont1 = love.graphics.newFont('assets/fonts/C800.ttf', titleFontSize1)
+    titleFont2 = love.graphics.newFont('assets/fonts/Lazer84.ttf', titleFontSize2)
+    startMsgFont = love.graphics.newFont('assets/fonts/C800.ttf', msgFontSize)
     music = love.audio.newSource("assets/music/Stevia Sphere - Drum machine dreams.ogg", "stream")
+    titleText1 = love.graphics.newText(titleFont1, "Enemy is in Another")
+    titleText2 = love.graphics.newText(titleFont2, "Dungeon")
+    msgText = love.graphics.newText(startMsgFont, "Press X to START")
     effect = Moonshine(windowWidth, windowHeight, Moonshine.effects.crt)
     .chain(Moonshine.effects.vignette)
     .chain(Moonshine.effects.scanlines)
@@ -27,16 +32,17 @@ function menu:init()
     effect.chromasep.radius = 2
 
     music:setLooping(true)
-    msgFontColor = {0, 0, 0}
-    titleFontColor = {1, 1, 1}
+    msgFontColor = {0, 0, 0, 0}
+    titleFontColor1 = {1, 1, 1}
+    titleFontColor2 = {1, 0, 0}
     starfield = generateStarfield()
 
     fadeIn = function()
-        Timer.tween(0.5, msgFontColor, {1, 1, 1}, 'linear', fadeOut)
+        Timer.tween(0.5, msgFontColor, {1, 1, 1, 1}, 'linear', fadeOut)
     end
 
     fadeOut = function()
-        Timer.tween(0.5, msgFontColor, {0, 0, 0}, 'linear', fadeIn)
+        Timer.tween(0.5, msgFontColor, {0, 0, 0, 0}, 'linear', fadeIn)
     end
 
     fadeIn()
@@ -59,14 +65,17 @@ end
 
 function menu:draw()
     effect(function()
-        love.graphics.setFont(titleFont)
-        love.graphics.setColor(titleFontColor)
+        love.graphics.setFont(titleFont1)
+        love.graphics.setColor(titleFontColor1)
         love.graphics.draw(starfield, love.graphics.getWidth() * 0.5, love.graphics.getHeight() * 0.5)
-        love.graphics.print("Enemy is in Another Dungeon",(windowWidth * 0.5) - (titleFontSize * defaultFontFactor), (windowHeight * 0.5) - 50)
+        love.graphics.draw(titleText1,(windowWidth * 0.5) - (titleText1:getWidth() * 0.5), (windowHeight * 0.5) - 50)
+        love.graphics.setColor(titleFontColor2)
+        love.graphics.setFont(titleFont2)
+        love.graphics.draw(titleText2,(windowWidth * 0.5) - (titleText2:getWidth() * 0.5), (windowHeight * 0.5) + 2, -0.17)
 
         love.graphics.setFont(startMsgFont)
         love.graphics.setColor(msgFontColor)
-        love.graphics.print("Press X to START", (windowWidth * 0.5) - (msgFontSize * (defaultFontFactor/1.5)), windowHeight - 50)
+        love.graphics.draw(msgText, (windowWidth * 0.5) - (msgText:getWidth() * 0.5), windowHeight - 50)
     end)
 end
 
