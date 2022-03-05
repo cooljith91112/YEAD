@@ -1,8 +1,19 @@
 local Gamestate = require("libs.hump.gamestate")
 local LoveSplash = require("libs.o-ten-one")
 require("scenes.menu_scene");
+require("scenes.level1_scene");
 
 function love.load()
+    -- initGame()
+    bypassMenu()
+end
+
+function bypassMenu()
+    Gamestate.switch(level1)
+    Gamestate.registerEvents()
+end
+
+function initGame()
     splash = LoveSplash({background={0, 0, 0}})
     splash.onDone = onLoveSplashDone
 end

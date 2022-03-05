@@ -7,6 +7,7 @@ Windfield = require("libs.windfield")
 require("libs.tserial")
 require("core.notifications")
 require("entities.enemy")
+require("entities.pickable")
 local zoomFactor = 3
 local player = {
   x=0,
@@ -23,12 +24,14 @@ local _h = windowHeight/zoomFactor
 
 Map = Class {
   __include=Gamestate,
-  init = function(self, mapName)
+  init = function(self, mapName, debug)
+    self.debug = debug and debug or false
     _gameWorld = Windfield.newWorld(0,0)
-    _gameWorld:setQueryDebugDrawing(true) -- Remove when deploy
-    _gameWorld:addCollisionClass('player')
+    _gameWorld:setQueryDebugDrawing(debug and debug or false) -- Remove when deploy
     _gameWorld:addCollisionClass('interactive')
+    _gameWorld:addCollisionClass('pickable')
     _gameWorld:addCollisionClass('enemy')
+    _gameWorld:addCollisionClass('player')
     effect = Moonshine(windowWidth, windowHeight, Moonshine.effects.crt)
                     .chain(Moonshine.effects.vignette)
                     .chain(Moonshine.effects.scanlines)
@@ -52,11 +55,7 @@ Map = Class {
             
             player.collider:setFixedRotation(true)
             player.collider:setCollisionClass('player')
-            player.collider:setObject({
-              x = player.x,
-              y = player.y,
-              dir = player.dir
-            })
+            player.collider:setObject(player)
           end
 
           if obj.type=="interactive" then
@@ -72,9 +71,16 @@ Map = Class {
             collider:setType("static")
           end
 
+          if obj.type=="pickable" then
+            local pickable = Pickable(obj.x, obj.y, obj.width, obj.height, obj.name and obj.name or nil, _gameWorld)
+            pickable:setCollider(obj.properties)
+            table.insert(self.pickables, pickable)
+          end
+
           if obj.type=="enemy" then
-            enemy = Enemy(obj.x, obj.y, _gameWorld)
+            local enemy = Enemy(obj.x, obj.y, _gameWorld)
             enemy:setCollider()
+            table.insert(self.enemies, enemy)
           end
         end
     end
@@ -86,7 +92,10 @@ Map = Class {
       end
     end
   end,
-  entities={}
+  entities={},
+  enemies={},
+  pickables={},
+  debug=false
 }
 
 function Map:update(dt)
@@ -118,11 +127,7 @@ function Map:update(dt)
   _gameWorld:update(dt)
   player.x = player.collider:getX() - 4
   player.y = player.collider:getY() - 4
-  player.collider:setObject({
-    x = player.x,
-    y = player.y,
-    dir = player.dir
-  })
+  player.collider:setObject(player)
 
   camera:lookAt(player.x, player.y)
   currentMap:update(dt)
@@ -146,8 +151,8 @@ function Map:update(dt)
     camera.y = (mapHeight - _h/2)
   end
 
-  if player.collider:enter('interactive') then
-    local _interColliderData = player.collider:getEnterCollisionData('interactive')
+  if player.collider:enter('interactive') or player.collider:enter('pickable')then
+    local _interColliderData = player.collider:getEnterCollisionData('interactive') or player.collider:getEnterCollisionData('pickable')
     local interactiveCollider = _interColliderData.collider
     local interactiveData = interactiveCollider:getObject()
     if interactiveData.message then 
@@ -155,7 +160,22 @@ function Map:update(dt)
     end
   end
   notifications:update(dt)
-  enemy:update(dt)
+  for i,enemy in pairs(self.enemies) do
+    if enemy.dead then
+      table.remove(self.enemies, i)
+    else
+      enemy:update(dt)
+    end
+  end
+
+  for i,pickable in pairs(self.pickables) do
+    if pickable.acquired then
+      table.remove(self.pickables, i)
+    else
+      pickable:update(dt)
+    end
+  end
+  
 end
 
 function Map:draw()
@@ -165,8 +185,16 @@ function Map:draw()
       drawMapLayer("decorations")
       love.graphics.draw(player.sprite, player.x, player.y)
       drawMapLayer("foreground")
-      _gameWorld:draw() -- Debug Collision Draw
-      enemy:draw()
+      if self.debug then
+        _gameWorld:draw() -- Debug Collision Draw
+      end
+      for i,enemy in pairs(self.enemies) do
+        enemy:draw()
+      end
+
+      for i,pickable in pairs(self.pickables) do
+        pickable:draw()
+      end
     camera:detach()
     notifications:draw()
   end)

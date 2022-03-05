@@ -9,7 +9,7 @@ function level1:init()
   constants.resetColors()
   screenShake = ScreenShaker()
   ambience = Ambience({"atmosphere1","thunder"})
-  map = Map("level1")
+  map = Map("level1", false)
 end
 
 function level1:enter(previous)

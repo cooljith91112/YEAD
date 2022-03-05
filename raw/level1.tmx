@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="33">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="47">
  <editorsettings>
   <export target="../assets/maps/level1.lua" format="lua"/>
  </editorsettings>
@@ -103,9 +103,9 @@
 0,0,0,0,97,98,0,0,0,0,0,0,0,0,0,0,100,101,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,129,130,0,0,0,0,33,34,0,0,0,3,132,133,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,65,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,37,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,33,34,0,0,0,0,0,0,0,37,0,0,37,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,33,34,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,65,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -140,25 +140,35 @@
     <property name="talker_data" value="Beware of the Alien Monster"/>
    </properties>
   </object>
-  <object id="27" name="potion" type="interactive" x="179.969" y="117" width="8.04438" height="11">
+  <object id="27" name="heart" type="pickable" x="166.333" y="103" width="8" height="8">
    <properties>
     <property name="interactive_type" value="pickable"/>
-    <property name="message" value="Acquired Potion"/>
+    <property name="message" value="Health Increased"/>
+    <property name="value" value="20"/>
    </properties>
   </object>
-  <object id="30" name="potion" type="interactive" x="211.917" y="85.0417" width="8.04438" height="11">
+  <object id="44" name="heart" type="pickable" x="203.038" y="83.6818" width="8" height="8">
    <properties>
     <property name="interactive_type" value="pickable"/>
-    <property name="message" value="Acquired Potion"/>
+    <property name="message" value="Health Increased"/>
+    <property name="value" value="20"/>
    </properties>
   </object>
-  <object id="31" name="potion" type="interactive" x="227.943" y="116.965" width="8.04438" height="11">
+  <object id="45" name="heart" type="pickable" x="199.288" y="117.932" width="8" height="8">
    <properties>
     <property name="interactive_type" value="pickable"/>
-    <property name="message" value="Acquired Potion"/>
+    <property name="message" value="Health Increased"/>
+    <property name="value" value="20"/>
    </properties>
   </object>
-  <object id="32" type="enemy" x="128" y="48" width="16" height="16"/>
+  <object id="46" name="heart" type="pickable" x="158.288" y="127.682" width="8" height="8">
+   <properties>
+    <property name="interactive_type" value="pickable"/>
+    <property name="message" value="Health Increased"/>
+    <property name="value" value="20"/>
+   </properties>
+  </object>
+  <object id="32" type="enemy" x="23" y="18.3333" width="8" height="8"/>
  </objectgroup>
  <objectgroup id="4" name="walls">
   <object id="7" type="wall" x="496" y="0" width="16" height="512"/>

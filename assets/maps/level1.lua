@@ -9,7 +9,7 @@ return {
   tilewidth = 16,
   tileheight = 16,
   nextlayerid = 7,
-  nextobjectid = 33,
+  nextobjectid = 47,
   properties = {},
   tilesets = {
     {
@@ -233,9 +233,9 @@ return {
         0, 0, 0, 0, 97, 98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 101, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 129, 130, 0, 0, 0, 0, 33, 34, 0, 0, 0, 3, 132, 133, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 65, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 33, 34, 0, 0, 0, 0, 0, 0, 0, 37, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 33, 34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 65, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -306,50 +306,70 @@ return {
         },
         {
           id = 27,
-          name = "potion",
-          type = "interactive",
+          name = "heart",
+          type = "pickable",
           shape = "rectangle",
-          x = 179.969,
-          y = 117,
-          width = 8.04438,
-          height = 11,
+          x = 166.333,
+          y = 103,
+          width = 8,
+          height = 8,
           rotation = 0,
           visible = true,
           properties = {
             ["interactive_type"] = "pickable",
-            ["message"] = "Acquired Potion"
+            ["message"] = "Health Increased",
+            ["value"] = "20"
           }
         },
         {
-          id = 30,
-          name = "potion",
-          type = "interactive",
+          id = 44,
+          name = "heart",
+          type = "pickable",
           shape = "rectangle",
-          x = 211.917,
-          y = 85.0417,
-          width = 8.04438,
-          height = 11,
+          x = 203.038,
+          y = 83.6818,
+          width = 8,
+          height = 8,
           rotation = 0,
           visible = true,
           properties = {
             ["interactive_type"] = "pickable",
-            ["message"] = "Acquired Potion"
+            ["message"] = "Health Increased",
+            ["value"] = "20"
           }
         },
         {
-          id = 31,
-          name = "potion",
-          type = "interactive",
+          id = 45,
+          name = "heart",
+          type = "pickable",
           shape = "rectangle",
-          x = 227.943,
-          y = 116.965,
-          width = 8.04438,
-          height = 11,
+          x = 199.288,
+          y = 117.932,
+          width = 8,
+          height = 8,
           rotation = 0,
           visible = true,
           properties = {
             ["interactive_type"] = "pickable",
-            ["message"] = "Acquired Potion"
+            ["message"] = "Health Increased",
+            ["value"] = "20"
+          }
+        },
+        {
+          id = 46,
+          name = "heart",
+          type = "pickable",
+          shape = "rectangle",
+          x = 158.288,
+          y = 127.682,
+          width = 8,
+          height = 8,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["interactive_type"] = "pickable",
+            ["message"] = "Health Increased",
+            ["value"] = "20"
           }
         },
         {
@@ -357,10 +377,10 @@ return {
           name = "",
           type = "enemy",
           shape = "rectangle",
-          x = 128,
-          y = 48,
-          width = 16,
-          height = 16,
+          x = 23,
+          y = 18.3333,
+          width = 8,
+          height = 8,
           rotation = 0,
           visible = true,
           properties = {}
