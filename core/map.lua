@@ -8,13 +8,15 @@ require("libs.tserial")
 require("core.notifications")
 require("entities.enemy")
 require("entities.pickable")
+anim8 = require("libs.anim8.anim8")
 local zoomFactor = 3
 local player = {
   x=0,
   y=0,
   sprite=love.graphics.newImage("assets/images/player_demo.png"),
-  speed=100,
-  dir="down"
+  speed=70,
+  dir="down",
+  spriteSheet= love.graphics.newImage("assets/images/aswani.png")
 }
 local fullscreen = true
 
@@ -26,6 +28,7 @@ Map = Class {
   __include=Gamestate,
   init = function(self, mapName, debug)
     self.debug = debug and debug or false
+    initAnimations()
     _gameWorld = Windfield.newWorld(0,0)
     _gameWorld:setQueryDebugDrawing(debug and debug or false) -- Remove when deploy
     _gameWorld:addCollisionClass('interactive')
@@ -51,7 +54,7 @@ Map = Class {
           if obj.name=="player" and obj.type=="player" then
             player.x = obj.x
             player.y = obj.y
-            player.collider = _gameWorld:newBSGRectangleCollider(player.x, player.y, 8, 8, 0)
+            player.collider = _gameWorld:newBSGRectangleCollider(player.x, player.y, 16, 16, 0)
             
             player.collider:setFixedRotation(true)
             player.collider:setCollisionClass('player')
@@ -101,32 +104,41 @@ Map = Class {
 function Map:update(dt)
   local vx = 0
   local vy = 0
-
+  local isMoving = false
   if love.keyboard.isDown("w") then
     vy = player.speed * -1
-    player.dir = "up"
+    player.dir = player.animations.up
+    isMoving = true
   end
   
   if love.keyboard.isDown("a") then
     vx = player.speed * -1
-    player.dir = "left"
+    player.dir = player.animations.left
+    isMoving = true
   end
   
   if love.keyboard.isDown("s") then
     vy = player.speed
-    player.dir = "down"
+    player.dir = player.animations.down
+    isMoving = true
   end
 
   if love.keyboard.isDown("d") then
     vx = player.speed
-    player.dir = "right"
+    player.dir = player.animations.right
+    isMoving = true
   end
+
+  if isMoving == false then
+    player.dir:gotoFrame(2)
+  end
+  player.dir:update(dt)
 
   player.collider:setLinearVelocity(vx, vy)
 
   _gameWorld:update(dt)
-  player.x = player.collider:getX() - 4
-  player.y = player.collider:getY() - 4
+  player.x = player.collider:getX() - 8
+  player.y = player.collider:getY() - 8
   player.collider:setObject(player)
 
   camera:lookAt(player.x, player.y)
@@ -181,9 +193,11 @@ end
 function Map:draw()
   effect(function()
     camera:attach()
+      drawMapLayer("water")
       drawMapLayer("ground")
       drawMapLayer("decorations")
-      love.graphics.draw(player.sprite, player.x, player.y)
+      --love.graphics.draw(player.sprite, player.x, player.y)
+      player.dir:draw(player.spriteSheet, player.x, player.y, nil, 0.5, 0.5)
       drawMapLayer("foreground")
       if self.debug then
         _gameWorld:draw() -- Debug Collision Draw
@@ -223,6 +237,17 @@ function resize()
 	end
 	effect.resize(_width,_height)
   notifications.calculateWindowDimensions()
+end
+
+function initAnimations()
+  player.grid=anim8.newGrid(32,32,player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
+  
+  player.animations = {}
+  player.animations.down = anim8.newAnimation(player.grid('1-3', 1),0.1)
+  player.animations.left = anim8.newAnimation(player.grid('1-3', 2),0.1)
+  player.animations.right = anim8.newAnimation(player.grid('1-3', 3),0.1)
+  player.animations.up = anim8.newAnimation(player.grid('1-3', 4),0.1)
+  player.dir = player.animations.down
 end
 
 return Map

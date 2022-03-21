@@ -4,8 +4,6 @@ local Timer = require "libs.hump.timer"
 local Gamestate = require("libs.hump.gamestate")
 Moonshine = require("libs.moonshine")
 require("core.constants")
--- scenes
-require("scenes.level1_scene");
 
 local titleFontSize1 = 35
 local titleFontSize2 = 40
@@ -18,7 +16,7 @@ function menu:init()
     titleFont1 = love.graphics.newFont('assets/fonts/C800.ttf', titleFontSize1)
     titleFont2 = love.graphics.newFont('assets/fonts/Lazer84.ttf', titleFontSize2)
     startMsgFont = love.graphics.newFont('assets/fonts/C800.ttf', msgFontSize)
-    music = love.audio.newSource("assets/music/Stevia Sphere - Drum machine dreams.ogg", "stream")
+    music = love.audio.newSource("assets/music/title.ogg", "stream")
     titleText1 = love.graphics.newText(titleFont1, "Your Enemy is in Another")
     titleText2 = love.graphics.newText(titleFont2, "Dungeon")
     msgText = love.graphics.newText(startMsgFont, "Press X to START")
@@ -85,6 +83,10 @@ function menu:keyreleased(key, scancode)
     if scancode == 'x' then
         Gamestate.switch(level1)
     end
+end
+
+function love.touchpressed( id, x, y, dx, dy, pressure )
+    Gamestate.switch(level1)
 end
 
 function generateStarfield()

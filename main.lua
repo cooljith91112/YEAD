@@ -4,8 +4,9 @@ require("scenes.menu_scene");
 require("scenes.level1_scene");
 
 function love.load()
-    -- initGame()
-    bypassMenu()
+    initGame()
+    love.graphics.setDefaultFilter("nearest", "nearest")
+    --bypassMenu()
 end
 
 function bypassMenu()
@@ -39,6 +40,6 @@ end
 function love.keyreleased(key, scancode)
     -- Temporary
     if scancode == 'escape' then
-        love.event.quit()    
+        love.event.quit()
     end
 end
